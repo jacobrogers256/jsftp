@@ -1,5 +1,7 @@
 import socket, argparse
 
+auth = False
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--address', type=str,
 			default="0.0.0.0",
@@ -12,6 +14,19 @@ file_contents = bytes()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	s.connect((args.address, args.port))
+	
+	if auth:
+		while True:
+			uname = input("Username? ")
+			s.sendall(uname.encode('utf-8'))
+			s.recv(3)
+			pword = input("Pword? ")
+			s.sendall(pword.encode('utf-8'))
+			code = s.recv(1)
+			if(code == b'S'):
+				break
+			else:
+				print("Bad Credentials")
 
 	while True:
 		comm = input("Command ?")
