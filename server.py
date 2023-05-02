@@ -5,7 +5,7 @@ parser.add_argument('-a', '--address', type=str,
 			default="0.0.0.0",
 			help='IP Address to listen on')
 parser.add_argument('-p', '--port', type=int, default=65432,
-			help='TCP port to send on')
+			help='TCP port to listen on')
 args = parser.parse_args()
 
 orig_dir = os.getcwd()
