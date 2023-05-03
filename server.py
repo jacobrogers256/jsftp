@@ -1,4 +1,4 @@
-import socket, argparse, os
+import socket, argparse, os, json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--address', type=str,
@@ -18,6 +18,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		conn, addr = s.accept()
 		with conn:
 			print(f"Connected by {addr}")
+			
+			if auth:
+				while True:
+					uname = conn.recv(1024).decode('utf-8')
+					conn.sendall(b"ACK")
+					pword = conn.recv(1024).decode('utf-8')
+					if((uname in creds.keys()) and (pword == creds[uname])):
+						conn.sendall(b'S')
+						break
+					else:
+						conn.sendall(b'F')
+			
 			while True:
 				cmd = conn.recv(1024).decode("utf-8")
 				if(("list" in cmd.lower()) or ("ls" in cmd.lower())):
