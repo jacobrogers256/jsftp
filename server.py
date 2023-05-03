@@ -1,5 +1,7 @@
 import socket, argparse, os, json
 
+auth = False
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--address', type=str,
 			default="0.0.0.0",
