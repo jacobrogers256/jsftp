@@ -1,5 +1,7 @@
 import socket, argparse
 
+auth = False
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--address', type=str,
 			default="0.0.0.0",
@@ -12,6 +14,19 @@ file_contents = bytes()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	s.connect((args.address, args.port))
+	
+	if auth:
+		while True:
+			uname = input("Username? ")
+			s.sendall(uname.encode('utf-8'))
+			s.recv(3)
+			pword = input("Pword? ")
+			s.sendall(pword.encode('utf-8'))
+			code = s.recv(1)
+			if(code == b'S'):
+				break
+			else:
+				print("Bad Credentials")
 
 	while True:
 		comm = input("Command ?")
@@ -49,6 +64,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 			print("GET - GET FILE FROM SERVER")
 			print("CD/CHDIR - CHANGE DIRECTORY")
 			print("EXIT/QUIT - TERMINATE CONNECTION")
+			print("SIZE - GET FILE SIZE IN BYTES")
 		elif(("cd" in comm.lower()) or ("chdir" in comm.lower())):
 			dir = input("Enter directory to enter> ")
 			s.sendall(bytes(dir, 'utf-8'))
+		elif("size" in comm.lower()):
+			file_name = input("Enter File Name> ")
+			s.sendall(bytes(file_name, 'utf-8'))
+			header_data = s.recv(1024).decode(encoding='utf-8')
+			print(header_data)

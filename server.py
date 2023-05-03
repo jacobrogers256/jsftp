@@ -1,4 +1,4 @@
-import socket, argparse, os
+import socket, argparse, os, json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--address', type=str,
@@ -18,6 +18,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		conn, addr = s.accept()
 		with conn:
 			print(f"Connected by {addr}")
+			
+			if auth:
+				while True:
+					uname = conn.recv(1024).decode('utf-8')
+					conn.sendall(b"ACK")
+					pword = conn.recv(1024).decode('utf-8')
+					if((uname in creds.keys()) and (pword == creds[uname])):
+						conn.sendall(b'S')
+						break
+					else:
+						conn.sendall(b'F')
+			
 			while True:
 				cmd = conn.recv(1024).decode("utf-8")
 				if(("list" in cmd.lower()) or ("ls" in cmd.lower())):
@@ -44,3 +56,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 					break
 				elif(("cd" in cmd.lower()) or ("chdir" in cmd.lower())):
 					os.chdir(conn.recv(1024).decode('utf-8'))
+				elif("size" in cmd.lower()):
+					data = conn.recv(1024).decode(encoding="utf-8")
+					try:
+						with open(data, 'rb') as f:
+							conn.sendall(bytes(str(len(f.read())), 'utf-8'))
+					except:
+						conn.sendall("Resource Not Found!".encode("utf-8"))
