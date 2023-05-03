@@ -1,8 +1,10 @@
 This is my basic FTP clone. It is not compatible, but is inspired by its spirit and UI. It is written in Python, and is hella insecure IMO. The server works, but only for one
 connection at a time. If another volunteer could help I would love that. If anyone wants to help, try writing down the protocol I use in a formal document and make it less wasteful 
-with packet use. More features like an entry banner would be nice. I implemented password authentication so if anyone cares I can add it to this repo.
+with packet use. More features like an entry banner would be nice. I implemented password authentication as well.
 
 This is not production ready (LOL if you thought it was, you are cute UwU). It is way too slow, untested and insecure for that purpose. If someone for whatever reason wants to make it 
 production ready, feel free. I would love it.
+
+If you want to use this, either read the code, or learn what Inetutils is.
 
 I am using a BSD license because I don't care.
